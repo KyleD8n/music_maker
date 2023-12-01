@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import fretboard1 from './assets/fretboard-1-12.png';
+import "./App.css";
+
+// import Login from "./components/Login";
+// import Logout from "./components/Logout";
+
+import { AppProvider } from "./context/AppContext";
+import { useContext } from "react";
+import AppContext from "./context/AppContext";
+import Router from "./Router";
 
 function App() {
+  const { user } = useContext(AppContext);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Router/>
+      {/* {user ? ( <> <Router /> <Logout /> </> ) : ( <Login /> )} */}
     </div>
   );
 }
 
-export default App;
+const AppWrapper = () => {
+  return (
+    <AppProvider>
+      <App />
+    </AppProvider>
+  );
+};
+
+export default AppWrapper;
