@@ -1,16 +1,24 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const AppContext = createContext();
 
-export const AppProvider = ({children}) => {
-    const [user, setUser] = useState(null);
-    const [chords, setChords] = useState([])
-    const [songs, setSongs] = useState([])
-    const [scales, setScales] = useState([])
+export const AppProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [chords, setChords] = useState([]);
+  const [songs, setSongs] = useState([]);
+  const [scales, setScales] = useState([]);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const cachedUser = localStorage.getItem("user");
+    if (cachedUser) {
+      setUser(JSON.parse(cachedUser));
+    }
+  }, []);
 
-useEffect(() => {
+  useEffect(() => {
     const getSongs = async () => {
       const response = await axios.get(
         `http://localhost:4001/users/${user.id}/songs`
@@ -19,40 +27,42 @@ useEffect(() => {
     };
 
     const getScales = async () => {
-        const response = await axios.get(
-            'http://localhost:4001/scales'
-        );
-        setScales(response.data);
+      const response = await axios.get("http://localhost:4001/scales");
+      setScales(response.data);
     };
 
     const getChords = async () => {
-      const response = await axios.get(
-        `http://localhost:4001/chords`
-      );
+      const response = await axios.get(`http://localhost:4001/chords`);
       setChords(response.data);
     };
 
     if (user?.id) {
-        getSongs();
+      getSongs();
     }
     getScales();
     getChords();
-}, [user]);
+  }, [user]);
 
-const login = async (email, password) => {
-    const response = await axios.post("http://localhost:4001/login", {
-      email,
-      password,
-    });
-    if (response.data) {
-      setUser(response.data);
-      localStorage.setItem("user", JSON.stringify(response.data));
-    } else {
-      console.error("Login failed.");
+  const login = async (email, password) => {
+    try {
+      const response = await axios.post("http://localhost:4001/login", {
+        email,
+        password,
+      });
+      if (response.data) {
+        setUser(response.data);
+        localStorage.setItem("user", JSON.stringify(response.data));
+        navigate("/");
+      } else {
+        console.error("Login failed.");
+      }
+    } catch (err) {
+      console.log(err);
+      return err;
     }
   };
 
-return (
+  return (
     <AppContext.Provider
       value={{
         user,
@@ -60,7 +70,7 @@ return (
         chords,
         songs,
         login,
-        setSongs
+        setSongs,
       }}
     >
       {children}

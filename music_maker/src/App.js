@@ -1,9 +1,6 @@
-import fretboard1 from './assets/fretboard-1-12.png';
 import "./App.css";
 
 // import Login from "./components/Login";
-// import Logout from "./components/Logout";
-
 import { AppProvider } from "./context/AppContext";
 import { useContext } from "react";
 import AppContext from "./context/AppContext";
@@ -14,7 +11,7 @@ function App() {
 
   return (
     <div className="App">
-      <Router/>
+      <Router />
       {/* {user ? ( <> <Router /> <Logout /> </> ) : ( <Login /> )} */}
     </div>
   );

@@ -1,30 +1,44 @@
 import "./Home.css";
 import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import AppContext from "../../context/AppContext";
-import Button from "@mui/joy/Button";
+import {
+  Typography,
+  Button,
+  Modal,
+  ModalDialog,
+  ModalClose,
+  DialogTitle,
+  FormControl,
+  Stack,
+  FormLabel,
+  Input,
+} from "@mui/joy";
 
 const Home = () => {
   const [newSongName, setNewSongName] = useState("");
   const [newSong, setNewSong] = useState([]);
   const [selectedChords, setSelectedChords] = useState([]);
+  const [selectedScale, setSelectedScale] = useState({});
   const { chords, scales, setSongs, user } = useContext(AppContext);
-  const [isButtonSelected, setIsButtonSelected] = useState(true)
+  const [isButtonSelected, setIsButtonSelected] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = async () => {
+    console.log(user);
     const { data: song } = await axios.post(`http://localhost:4001/songs`, {
-      name: newSong,
-      progression: chords,
+      name: newSongName,
       user_id: user.id,
-      scale: newSong,
+      scale_id: selectedScale.id,
     });
 
-    setSongs(prevState => [...prevState, song])
+    setSongs((prevState) => [...prevState, song]);
   };
 
   const handleChordClick = (chord) => {
     setSelectedChords((prevState) => [...prevState, chord]);
-    setIsButtonSelected(prevState => !prevState);
+    setIsButtonSelected((prevState) => !prevState);
   };
 
   const getStringChords = (chords, startingId) => {
@@ -59,7 +73,7 @@ const Home = () => {
             <Button
               className="chord-buttons"
               onClick={() => handleChordClick(chord)}
-              color={isButtonSelected ? 'primary' : 'neutral'}
+              color={isButtonSelected ? "primary" : "neutral"}
               variant="solid"
             >
               {chord.name}
@@ -295,9 +309,54 @@ const Home = () => {
           })
           .map((scale) => (
             <div className="scale" key={`scales-${scale.id}`}>
-              <Button onClick={handleSave} variant="outlined" size="lg">{scale.name}</Button>
+              <Button
+                onClick={() => {
+                  setSelectedScale(scale);
+                  setIsModalOpen(true);
+                }}
+                variant="outlined"
+                size="lg"
+              >
+                {scale.name}
+              </Button>
             </div>
           ))}
+        <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <ModalDialog>
+            <ModalClose />
+            <DialogTitle>Create Your Song</DialogTitle>
+            <Typography>Check out your song in the Song Library!</Typography>
+            <FormControl>
+              <FormLabel>Song Name</FormLabel>
+              <Input
+                required
+                placeholder="Type in here…"
+                sx={{
+                  "&::before": {
+                    border: "1.5px solid var(--Input-focusedHighlight)",
+                    transform: "scaleX(0)",
+                    left: "2.5px",
+                    right: "2.5px",
+                    bottom: 0,
+                    top: "unset",
+                    transition: "transform .15s cubic-bezier(0.1,0.9,0.2,1)",
+                    borderRadius: 0,
+                    borderBottomLeftRadius: "64px 20px",
+                    borderBottomRightRadius: "64px 20px",
+                  },
+                  "&:focus-within::before": {
+                    transform: "scaleX(1)",
+                  },
+                }}
+              />
+            </FormControl>
+            <FormControl>{selectedScale.name}</FormControl>
+            <FormControl>{console.log(selectedScale)}</FormControl>
+            <Button onClick={handleSave} type="submit">
+              Submit
+            </Button>
+          </ModalDialog>
+        </Modal>
       </div>
 
       <div className="nav-bar">
@@ -305,7 +364,9 @@ const Home = () => {
           <Button>Home</Button>
         </div>
         <div className="library-button">
-          <Button >Song Library</Button>
+          <Link to="./songLibrary">
+            <Button>Song Library</Button>
+          </Link>
         </div>
       </div>
     </div>
