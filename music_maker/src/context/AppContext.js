@@ -9,6 +9,7 @@ export const AppProvider = ({ children }) => {
   const [chords, setChords] = useState([]);
   const [songs, setSongs] = useState([]);
   const [scales, setScales] = useState([]);
+  const [selectedScale, setSelectedScale] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,6 +63,17 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const handleDelete = async (id) => {
+    await axios.delete(`http://localhost:4001/songs/${id}`);
+
+    const newSongs = [...songs];
+    const indexToDelete = newSongs.findIndex((s) => s.id === id);
+    newSongs.splice(indexToDelete, 1);
+    setSongs(newSongs);
+  };
+
+  const handleEdit = async (id) => {};
+
   return (
     <AppContext.Provider
       value={{
@@ -71,6 +83,9 @@ export const AppProvider = ({ children }) => {
         songs,
         login,
         setSongs,
+        handleDelete,
+        selectedScale,
+        setSelectedScale,
       }}
     >
       {children}

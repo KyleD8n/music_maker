@@ -20,13 +20,13 @@ const Home = () => {
   const [newSongName, setNewSongName] = useState("");
   const [newSong, setNewSong] = useState([]);
   const [selectedChords, setSelectedChords] = useState([]);
-  const [selectedScale, setSelectedScale] = useState({});
-  const { chords, scales, setSongs, user } = useContext(AppContext);
+  // const [selectedScale, setSelectedScale] = useState({});
+  const { chords, scales, setSongs, user, selectedScale, setSelectedScale } =
+    useContext(AppContext);
   const [isButtonSelected, setIsButtonSelected] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = async () => {
-    console.log(user);
     const { data: song } = await axios.post(`http://localhost:4001/songs`, {
       name: newSongName,
       user_id: user.id,
@@ -34,6 +34,13 @@ const Home = () => {
     });
 
     setSongs((prevState) => [...prevState, song]);
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setNewSongName("");
+    setNewSong([]);
+    setIsModalOpen(false);
   };
 
   const handleChordClick = (chord) => {
@@ -64,6 +71,17 @@ const Home = () => {
 
   return (
     <div className="Home">
+      <div className="nav-bar">
+        <div className="home-button">
+          <Button>Home</Button>
+        </div>
+        <div className="library-button">
+          <Link to="/songLibrary">
+            <Button>Song Library</Button>
+          </Link>
+        </div>
+      </div>
+
       <h1>Music Theory Butler</h1>
       <h3>Chords</h3>
 
@@ -298,9 +316,7 @@ const Home = () => {
         {scales
           .filter((scale) => {
             let hasSelectedChords = true;
-            console.log(hasSelectedChords);
             selectedChords.forEach((selectedChord) => {
-              console.log(selectedChord);
               if (!scale.chord_ids.includes(selectedChord.id)) {
                 hasSelectedChords = false;
               }
@@ -330,6 +346,7 @@ const Home = () => {
               <FormLabel>Song Name</FormLabel>
               <Input
                 required
+                onChange={(e) => setNewSongName(e.target.value)}
                 placeholder="Type in here…"
                 sx={{
                   "&::before": {
@@ -351,23 +368,11 @@ const Home = () => {
               />
             </FormControl>
             <FormControl>{selectedScale.name}</FormControl>
-            <FormControl>{console.log(selectedScale)}</FormControl>
             <Button onClick={handleSave} type="submit">
               Submit
             </Button>
           </ModalDialog>
         </Modal>
-      </div>
-
-      <div className="nav-bar">
-        <div className="home-button">
-          <Button>Home</Button>
-        </div>
-        <div className="library-button">
-          <Link to="./songLibrary">
-            <Button>Song Library</Button>
-          </Link>
-        </div>
       </div>
     </div>
   );
