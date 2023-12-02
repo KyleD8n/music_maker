@@ -59,7 +59,8 @@ return (
         scales,
         chords,
         songs,
-        login
+        login,
+        setSongs
       }}
     >
       {children}

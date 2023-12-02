@@ -1,18 +1,30 @@
 import "./Home.css";
 import { useState, useContext } from "react";
-import fretboard1 from "../../assets/fretboard-1-12.png";
+import axios from "axios";
 import AppContext from "../../context/AppContext";
 import Button from "@mui/joy/Button";
 
 const Home = () => {
-  const [newSong, setNewSong] = useState("");
+  const [newSongName, setNewSongName] = useState("");
+  const [newSong, setNewSong] = useState([]);
   const [selectedChords, setSelectedChords] = useState([]);
-  const { chords, scales } = useContext(AppContext);
+  const { chords, scales, setSongs, user } = useContext(AppContext);
+  const [isButtonSelected, setIsButtonSelected] = useState(true)
 
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    const { data: song } = await axios.post(`http://localhost:4001/songs`, {
+      name: newSong,
+      progression: chords,
+      user_id: user.id,
+      scale: newSong,
+    });
+
+    setSongs(prevState => [...prevState, song])
+  };
 
   const handleChordClick = (chord) => {
     setSelectedChords((prevState) => [...prevState, chord]);
+    setIsButtonSelected(prevState => !prevState);
   };
 
   const getStringChords = (chords, startingId) => {
@@ -47,7 +59,7 @@ const Home = () => {
             <Button
               className="chord-buttons"
               onClick={() => handleChordClick(chord)}
-              color="primary"
+              color={isButtonSelected ? 'primary' : 'neutral'}
               variant="solid"
             >
               {chord.name}
@@ -275,7 +287,7 @@ const Home = () => {
             console.log(hasSelectedChords);
             selectedChords.forEach((selectedChord) => {
               console.log(selectedChord);
-              if (scale.chord_ids.includes(selectedChord.id)) {
+              if (!scale.chord_ids.includes(selectedChord.id)) {
                 hasSelectedChords = false;
               }
             });
@@ -283,7 +295,7 @@ const Home = () => {
           })
           .map((scale) => (
             <div className="scale" key={`scales-${scale.id}`}>
-              <div>{scale.name}</div>
+              <Button onClick={handleSave} variant="outlined" size="lg">{scale.name}</Button>
             </div>
           ))}
       </div>
@@ -293,7 +305,7 @@ const Home = () => {
           <Button>Home</Button>
         </div>
         <div className="library-button">
-          <Button>Song Library</Button>
+          <Button >Song Library</Button>
         </div>
       </div>
     </div>
