@@ -1,0 +1,1 @@
+SELECT * FROM songs WHERE user_id = ${id};
