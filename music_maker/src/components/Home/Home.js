@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import AppContext from "../../context/AppContext";
+import * as Tone from "tone";
 import {
   Typography,
   Button,
@@ -11,19 +12,31 @@ import {
   ModalClose,
   DialogTitle,
   FormControl,
-  Stack,
   FormLabel,
   Input,
 } from "@mui/joy";
+import Logout from "../Logout";
 
 const Home = () => {
-  const [newSongName, setNewSongName] = useState("");
   const [newSong, setNewSong] = useState([]);
   const [selectedChords, setSelectedChords] = useState([]);
-  // const [selectedScale, setSelectedScale] = useState({});
-  const { chords, scales, setSongs, user, selectedScale, setSelectedScale } =
-    useContext(AppContext);
-  const [isButtonSelected, setIsButtonSelected] = useState(true);
+  const [selectedButton, setSelectedButton] = useState(null);
+  const chorus = new Tone.Chorus(1, 2.5, 0.5).toDestination().start();
+  const synth = new Tone.Synth().connect(chorus);
+
+  // const synth = new Tone.Synth().toDestination();
+
+  const {
+    chords,
+    scales,
+    setSongs,
+    user,
+    logout,
+    selectedScale,
+    setSelectedScale,
+    newSongName,
+    setNewSongName,
+  } = useContext(AppContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = async () => {
@@ -45,7 +58,14 @@ const Home = () => {
 
   const handleChordClick = (chord) => {
     setSelectedChords((prevState) => [...prevState, chord]);
-    setIsButtonSelected((prevState) => !prevState);
+    setSelectedButton((prevState) =>
+      prevState === chord.name ? null : chord.name
+    );
+    const chordName =
+      chord.name === "A" || chord.name === "A#" || chord.name === "B"
+        ? `${chord.name}2`
+        : `${chord.name}3`;
+    synth.triggerAttackRelease(chordName, `8n`);
   };
 
   const getStringChords = (chords, startingId) => {
@@ -80,6 +100,9 @@ const Home = () => {
             <Button>Song Library</Button>
           </Link>
         </div>
+        <div className="logout-button">
+          <Button onClick={logout}>LOGOUT</Button>
+        </div>
       </div>
 
       <h1>Music Theory Butler</h1>
@@ -87,11 +110,11 @@ const Home = () => {
 
       <div className="chord-selector">
         {chords.map((chord) => (
-          <div className="chord" key={chord.id}>
+          <div className="chords" key={chord.id}>
             <Button
-              className="chord-buttons"
+              className={`${chord.name} chord-button`}
               onClick={() => handleChordClick(chord)}
-              color={isButtonSelected ? "primary" : "neutral"}
+              color={selectedButton === chord.name ? "neutral" : "primary"}
               variant="solid"
             >
               {chord.name}
@@ -110,7 +133,7 @@ const Home = () => {
                 // }}
                 className="string-chords"
                 onClick={() => handleChordClick(chord)}
-                color="primary"
+                color={selectedButton === chord.name ? "danger" : "primary"}
                 variant="solid"
               >
                 {chord.name}
@@ -125,7 +148,7 @@ const Home = () => {
               <Button
                 className="string-chords"
                 onClick={() => handleChordClick(chord)}
-                color="primary"
+                color={selectedButton === chord.name ? "danger" : "primary"}
                 variant="solid"
               >
                 {chord.name}
@@ -140,7 +163,7 @@ const Home = () => {
               <Button
                 className="string-chords"
                 onClick={() => handleChordClick(chord)}
-                color="primary"
+                color={selectedButton === chord.name ? "danger" : "primary"}
                 variant="solid"
               >
                 {chord.name}
@@ -155,7 +178,7 @@ const Home = () => {
               <Button
                 className="string-chords"
                 onClick={() => handleChordClick(chord)}
-                color="primary"
+                color={selectedButton === chord.name ? "danger" : "primary"}
                 variant="solid"
               >
                 {chord.name}
@@ -170,7 +193,7 @@ const Home = () => {
               <Button
                 className="string-chords"
                 onClick={() => handleChordClick(chord)}
-                color="primary"
+                color={selectedButton === chord.name ? "danger" : "primary"}
                 variant="solid"
               >
                 {chord.name}
@@ -185,7 +208,7 @@ const Home = () => {
               <Button
                 className="string-chords"
                 onClick={() => handleChordClick(chord)}
-                color="primary"
+                color={selectedButton === chord.name ? "danger" : "primary"}
                 variant="solid"
               >
                 {chord.name}
@@ -193,122 +216,6 @@ const Home = () => {
             </div>
           ))}
         </div>
-
-        {/* <div className="string-1">
-          <div className="frets-1-6">
-            <h5>F</h5>
-            <h5>F#</h5>
-            <h5>G</h5>
-            <h5>G#</h5>
-            <h5>A</h5>
-            <h5>A#</h5>
-          </div>
-          <div className="frets-7-12">
-            <h5>B</h5>
-            <h5>C</h5>
-            <h5>C#</h5>
-            <h5>D</h5>
-            <h5>D#</h5>
-            <h5>E</h5>
-          </div>
-        </div>
-
-        <div className="string-2">
-          <div className="frets-1-6">
-            <h5>C</h5>
-            <h5>C#</h5>
-            <h5>D</h5>
-            <h5>D#</h5>
-            <h5>E</h5>
-            <h5>F</h5>
-          </div>
-          <div className="frets-7-12">
-            <h5>F#</h5>
-            <h5>G</h5>
-            <h5>G#</h5>
-            <h5>A</h5>
-            <h5>A#</h5>
-            <h5>B</h5>
-          </div>
-        </div>
-
-        <div className="string-3">
-          <div className="frets-1-6">
-            <h5>G#</h5>
-            <h5>A</h5>
-            <h5>A#</h5>
-            <h5>B</h5>
-            <h5>C</h5>
-            <h5>C#</h5>
-          </div>
-          <div className="frets-7-12">
-            <h5>D</h5>
-            <h5>D#</h5>
-            <h5>E</h5>
-            <h5>F</h5>
-            <h5>F#</h5>
-            <h5>G</h5>
-          </div>
-        </div>
-
-        <div className="string-4">
-          <div className="frets-1-6">
-            <h5>D#</h5>
-            <h5>E</h5>
-            <h5>F</h5>
-            <h5>F#</h5>
-            <h5>G</h5>
-            <h5>G#</h5>
-          </div>
-          <div className="frets-7-12">
-            <h5>A</h5>
-            <h5>A#</h5>
-            <h5>B</h5>
-            <h5>C</h5>
-            <h5>C#</h5>
-            <h5>D</h5>
-          </div>
-        </div>
-
-        <div className="string-5">
-          <div className="frets-1-6">
-            <h5>A#</h5>
-            <h5>B</h5>
-            <h5>C</h5>
-            <h5>C#</h5>
-            <h5>D</h5>
-            <h5>D#</h5>
-            <div className="frets-7-12">
-              <h5>E</h5>
-              <h5>F</h5>
-              <h5>F#</h5>
-              <h5>G</h5>
-              <h5>G#</h5>
-              <h5>A</h5>
-            </div>
-          </div>
-        </div>
-
-        <div className="string-6">
-          <div className="frets-1-6">
-            <h5>F</h5>
-            <h5>F#</h5>
-            <h5>G</h5>
-            <h5>G#</h5>
-            <h5>A</h5>
-            <h5>A#</h5>
-          </div>
-          <div className="frets-7-12">
-            <h5>B</h5>
-            <h5>C</h5>
-            <h5>C#</h5>
-            <h5>D</h5>
-            <h5>D#</h5>
-            <h5>E</h5>
-          </div>
-        </div> */}
-
-        {/* <img src={fretboard1} className="fretboard-1" alt="fretboard" /> */}
       </div>
 
       <h3>Scales</h3>
