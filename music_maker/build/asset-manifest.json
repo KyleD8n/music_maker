@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.3c151c9e.css",
+    "main.js": "/static/js/main.8532923f.js",
+    "static/js/787.8b9d2418.chunk.js": "/static/js/787.8b9d2418.chunk.js",
+    "static/media/guitar-background.jpeg": "/static/media/guitar-background.155e058bc2354075f896.jpeg",
+    "static/media/fretboard-1-12.png": "/static/media/fretboard-1-12.b9fb9ec9a4bed94cf329.png",
+    "index.html": "/index.html",
+    "main.3c151c9e.css.map": "/static/css/main.3c151c9e.css.map",
+    "main.8532923f.js.map": "/static/js/main.8532923f.js.map",
+    "787.8b9d2418.chunk.js.map": "/static/js/787.8b9d2418.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3c151c9e.css",
+    "static/js/main.8532923f.js"
+  ]
+}

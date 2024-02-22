@@ -3,27 +3,52 @@ You can enter notes into the app and it will tell you what key that you are play
 
 ## Frontend
 
-[ ] Users should see a fretboard with notes all on each fret
+[x] Users should see a fretboard with notes all on each fret
 [ ] Users should see a saved song tab on the bottom
-[ ] Users should see a list of letters/ buttons they can click
-[ ] When clicked, users should see that note highlighted from frets 1-12
-[ ] Users should be able to select multiple notes
+[x] Users should see a list of letters/ buttons they can click
+[x] Users should be able to select multiple notes
 [ ] when multiple notes are selected it will display multiple notes on the fretboard
 [ ] Users should see every note highlighted from the selected note/s
-[ ] Users should see a box at the bottom displaying every key the selected notes are in
-[ ] Users can select the key button
+[x] Users should see a box at the bottom displaying every key the selected notes are in
+[x] Users can select the key button
 [ ] A pop up should appear to make a song
-[ ] Users should see their chord progression and scale displayed with all the notes
+[ ] Users should see their chord progression and key/scale displayed with all the notes
 [ ] Users should be able to write song name
 [ ] Users should be able to save their song
 [ ] Users should be able to click on the song tab and be re routed
 
+### Routes
+[ ] '/' Login (home if not logged in)
+[ ] '/' Home (home if logged in)
+[ ] '/songs' Songs (saved song list from users)
+
 ## Backend
+
+### Login Page
+
+- post /login
+
+### Home Page
+
+- get /chords
+- get /scales - make sure to join scales_chords  
+- post /songs
+
+
+### Songs Page
+
+- get /users/:id/songs
+- put /songs/:id
+- delete /songs/:id
+
+
+## DB
+
 Songs
 [ ] Id
 [ ] Name
 [ ] Progression column
-[ ] Scale column
+[ ] Scale_id
 [ ] User_id
 
 Users
@@ -32,7 +57,15 @@ Users
 [ ] Email
 [ ] Password
 
-## Routes
-[ ] Login (home if not logged in)
-[ ] Home (home if logged in)
-[ ] Songs (saved song list from users)
+Scales
+id
+name
+
+chords 
+id
+name
+
+scales_chords
+id
+scale_id
+chord_id

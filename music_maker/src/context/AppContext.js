@@ -23,18 +23,22 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     const getSongs = async () => {
       const response = await axios.get(
-        `http://localhost:4001/users/${user.id}/songs`
+        `https://us-central1-music-theory-butler.cloudfunctions.net/api/users/${user.id}/songs`
       );
       setSongs(response.data);
     };
 
     const getScales = async () => {
-      const response = await axios.get("http://localhost:4001/scales");
+      const response = await axios.get(
+        "https://us-central1-music-theory-butler.cloudfunctions.net/api/scales"
+      );
       setScales(response.data);
     };
 
     const getChords = async () => {
-      const response = await axios.get(`http://localhost:4001/chords`);
+      const response = await axios.get(
+        `https://us-central1-music-theory-butler.cloudfunctions.net/api/chords`
+      );
       setChords(response.data);
     };
 
@@ -47,10 +51,13 @@ export const AppProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post("http://localhost:4001/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://us-central1-music-theory-butler.cloudfunctions.net/api/login",
+        {
+          email,
+          password,
+        }
+      );
       if (response.data) {
         setUser(response.data);
         localStorage.setItem("user", JSON.stringify(response.data));
@@ -69,7 +76,9 @@ export const AppProvider = ({ children }) => {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:4001/songs/${id}`);
+    await axios.delete(
+      `https://us-central1-music-theory-butler.cloudfunctions.net/api/songs/${id}`
+    );
 
     const newSongs = [...songs];
     const indexToDelete = newSongs.findIndex((s) => s.id === id);

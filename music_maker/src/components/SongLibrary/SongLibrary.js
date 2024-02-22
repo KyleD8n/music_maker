@@ -49,7 +49,7 @@ const SongLibrary = () => {
 
   const handleEdit = async (id) => {
     const { data: editedSong } = await axios.put(
-      `http://localhost:4001/songs/${id}`,
+      `https://us-central1-music-theory-butler.cloudfunctions.net/api/songs/${id}`,
       {
         name: newSongName,
       }

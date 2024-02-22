@@ -40,11 +40,14 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = async () => {
-    const { data: song } = await axios.post(`http://localhost:4001/songs`, {
-      name: newSongName,
-      user_id: user.id,
-      scale_id: selectedScale.id,
-    });
+    const { data: song } = await axios.post(
+      `https://us-central1-music-theory-butler.cloudfunctions.net/api/songs`,
+      {
+        name: newSongName,
+        user_id: user.id,
+        scale_id: selectedScale.id,
+      }
+    );
 
     setSongs((prevState) => [...prevState, song]);
     handleClose();
